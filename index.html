@@ -26,14 +26,36 @@ body {
 </style>
 
 <body>
-  <div id="countdowns">
-    <div id="courtney"></div>
-    <div id="drew"></div>
-    <div id="michelle"></div>
-    <div id="nick"></div>
-  </div>
+  <div id="countdowns"></div>
 
 <script>
+const writers = [
+  {
+    name: "Courtney",
+    month: 5,
+    day: 1,
+    text: "completes her next complete draft of Bad Energy."
+  },
+  {
+    name: "Drew",
+    month: 2,
+    day: 15,
+    text: "shares 50,000 words of his novel-in-progress."
+  },
+  {
+    name: "Michelle",
+    month: 2,
+    day: 1,
+    text: "completes her first draft of Merel's story."
+  },
+  {
+    name: "Nick",
+    month: 1,
+    day: 28,
+    text: "sends everyone his final version of The Complex."
+  }
+];
+
 function timeUntil(month, day) {
   const now = new Date();
   let year = now.getFullYear();
@@ -44,51 +66,50 @@ function timeUntil(month, day) {
     target = Date.UTC(year + 1, month, day);
   }
 
-  let diff = target - now.getTime();
-  diff = Math.max(0, diff);
+  const diff = target - now.getTime();
+
+  if (diff <= 0) {
+    return { expired: true, ms: 0 };
+  }
 
   const totalSeconds = Math.floor(diff / 1000);
 
-  const days = Math.floor(totalSeconds / 86400);
-  const hours = Math.floor((totalSeconds % 86400) / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-
-  return { days, hours, minutes };
+  return {
+    expired: false,
+    ms: diff,
+    days: Math.floor(totalSeconds / 86400),
+    hours: Math.floor((totalSeconds % 86400) / 3600),
+    minutes: Math.floor((totalSeconds % 3600) / 60)
+  };
 }
 
 function update() {
+  const container = document.getElementById("countdowns");
 
-  // Courtney — June 1
-  const courtney = timeUntil(5, 1);
+  const rows = writers.map(w => {
+    const t = timeUntil(w.month, w.day);
+    return { ...w, ...t };
+  });
 
-  // Drew — March 15
-  const drew = timeUntil(2, 15);
+  // expired first, then shortest
+  rows.sort((a, b) => a.ms - b.ms);
 
-  // Michelle — March 1
-  const michelle = timeUntil(2, 1);
+  container.innerHTML = "";
 
-  // Nick — February 28
-  const nick = timeUntil(1, 28);
+  rows.forEach(w => {
+    const div = document.createElement("div");
 
-  document.getElementById("courtney").innerHTML =
-    `<span class="count-num">${courtney.days}</span> days ` +
-    `<span class="count-num">${courtney.hours}</span> hours ` +
-    `<span class="count-num">${courtney.minutes}</span> minutes until Courtney completes her next complete draft of Bad Energy.`;
+    if (w.expired) {
+      div.innerHTML = `Time’s up for ${w.name}…`;
+    } else {
+      div.innerHTML =
+        `<span class="count-num">${w.days}</span> days ` +
+        `<span class="count-num">${w.hours}</span> hours ` +
+        `<span class="count-num">${w.minutes}</span> minutes until ${w.name} ${w.text}`;
+    }
 
-  document.getElementById("drew").innerHTML =
-    `<span class="count-num">${drew.days}</span> days ` +
-    `<span class="count-num">${drew.hours}</span> hours ` +
-    `<span class="count-num">${drew.minutes}</span> minutes until Drew shares 50,000 words of his novel-in-progress.`;
-
-  document.getElementById("michelle").innerHTML =
-    `<span class="count-num">${michelle.days}</span> days ` +
-    `<span class="count-num">${michelle.hours}</span> hours ` +
-    `<span class="count-num">${michelle.minutes}</span> minutes until Michelle completes her first draft of Merel's story.`;
-
-  document.getElementById("nick").innerHTML =
-    `<span class="count-num">${nick.days}</span> days ` +
-    `<span class="count-num">${nick.hours}</span> hours ` +
-    `<span class="count-num">${nick.minutes}</span> minutes until Nick sends everyone his final version of The Complex.`;
+    container.appendChild(div);
+  });
 }
 
 update();
