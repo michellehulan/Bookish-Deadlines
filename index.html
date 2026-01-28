@@ -13,14 +13,12 @@ body {
   text-align: center;
 }
 
-/* wrapper for vertical spacing */
 #countdowns {
   display: flex;
   flex-direction: column;
-  gap: 18px; /* space between lines */
+  gap: 18px;
 }
 
-/* red + bold numbers */
 .count-num {
   color: #c00000;
   font-weight: bold;
@@ -30,6 +28,7 @@ body {
 <body>
   <div id="countdowns">
     <div id="courtney"></div>
+    <div id="drew"></div>
     <div id="michelle"></div>
     <div id="nick"></div>
   </div>
@@ -39,31 +38,35 @@ function minutesUntil(month, day) {
   const now = new Date();
   let year = now.getFullYear();
 
-  // target at UTC midnight
   let target = Date.UTC(year, month, day);
 
-  // if passed, move to next year
   if (now.getTime() > target) {
     target = Date.UTC(year + 1, month, day);
   }
 
   const diffMs = target - now.getTime();
-  return Math.max(0, Math.floor(diffMs / 60000)); // total minutes
+  return Math.max(0, Math.floor(diffMs / 60000));
 }
 
 function update() {
 
-  // Courtney — June 1 (month = 5)
+  // Courtney — June 1 (5)
   const courtneyMinutes = minutesUntil(5, 1);
 
-  // Michelle — March 1 (month = 2)
+  // Drew — March 15 (2)
+  const drewMinutes = minutesUntil(2, 15);
+
+  // Michelle — March 1 (2)
   const michelleMinutes = minutesUntil(2, 1);
 
-  // Nick — February 28 (month = 1)
+  // Nick — February 28 (1)
   const nickMinutes = minutesUntil(1, 28);
 
   document.getElementById("courtney").innerHTML =
     `<span class="count-num">${courtneyMinutes}</span> minutes until Courtney completes her next complete draft of Bad Energy.`;
+
+  document.getElementById("drew").innerHTML =
+    `<span class="count-num">${drewMinutes}</span> minutes until Drew shares 50,000 words of his novel-in-progress.`;
 
   document.getElementById("michelle").innerHTML =
     `<span class="count-num">${michelleMinutes}</span> minutes until Michelle completes her first draft of Merel's story.`;
@@ -72,10 +75,7 @@ function update() {
     `<span class="count-num">${nickMinutes}</span> minutes until Nick sends everyone his final version of The Complex.`;
 }
 
-// run immediately
 update();
-
-// update every second
 setInterval(update, 1000);
 </script>
 </body>
