@@ -17,40 +17,47 @@ body {
 #countdown {
   white-space: normal;
 }
+
+/* red + bold numbers */
+.count-num {
+  color: #c00000;
+  font-weight: bold;
+}
 </style>
 
 <body>
-  <div id="days"></div>
   <div id="countdown"></div>
 
 <script>
 function update() {
   const now = new Date();
-  const year = now.getFullYear();
 
-  // Today at UTC midnight
-  const todayUTC = Date.UTC(year, now.getMonth(), now.getDate());
+  let targetYear = now.getFullYear();
 
-  // March 15 this year at UTC midnight (March = 2)
-  let targetYear = year;
+  // March 15 at UTC midnight
   let targetUTC = Date.UTC(targetYear, 2, 15);
 
   // If already passed, use next year
-  if (todayUTC > targetUTC) {
-    targetYear = year + 1;
+  if (now.getTime() > targetUTC) {
+    targetYear++;
     targetUTC = Date.UTC(targetYear, 2, 15);
   }
 
-  const msPerDay = 86400000;
-  const days = Math.ceil((targetUTC - todayUTC) / msPerDay);
+  const diff = targetUTC - now.getTime();
 
-  document.getElementById("days").textContent =
-    days + " days";
+  const totalSeconds = Math.max(0, Math.floor(diff / 1000));
 
-  document.getElementById("countdown").textContent =
-    days + " more days until Drew shares 50,000 words of his novel-in-progress....";
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+
+  document.getElementById("countdown").innerHTML =
+    `<span class="count-num">${days}</span> days ` +
+    `<span class="count-num">${hours}</span> hours ` +
+    `<span class="count-num">${minutes}</span> minutes until Drew shares 50,000 words of his novel-in-progress....`;
 }
 
 update();
+setInterval(update, 1000);
 </script>
 </body>
