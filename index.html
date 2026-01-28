@@ -23,6 +23,19 @@ body {
   color: #c00000;
   font-weight: bold;
 }
+
+/* flashing Times Up */
+.times-up {
+  color: #8b0000;
+  font-weight: bold;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
 </style>
 
 <body>
@@ -40,7 +53,7 @@ const writers = [
     name: "Drew",
     month: 2,
     day: 15,
-    text: "shares 50,000 words of his novel-in-progress."
+    text: "shares 50,000 words of his novel-in-progress...."
   },
   {
     name: "Michelle",
@@ -53,6 +66,14 @@ const writers = [
     month: 1,
     day: 28,
     text: "sends everyone his final version of The Complex."
+  },
+
+  /* FAKE TEST ENTRY */
+  {
+    name: "Test Writer",
+    month: 0,
+    day: 1,
+    text: "does absolutely nothing but trigger the Time’s Up state."
   }
 ];
 
@@ -91,7 +112,7 @@ function update() {
     return { ...w, ...t };
   });
 
-  // expired first, then shortest
+  // expired / soonest first
   rows.sort((a, b) => a.ms - b.ms);
 
   container.innerHTML = "";
@@ -100,7 +121,7 @@ function update() {
     const div = document.createElement("div");
 
     if (w.expired) {
-      div.innerHTML = `Time’s up for ${w.name}…`;
+      div.innerHTML = `<span class="times-up">Time’s up for ${w.name}…</span>`;
     } else {
       div.innerHTML =
         `<span class="count-num">${w.days}</span> days ` +
