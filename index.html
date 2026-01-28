@@ -34,7 +34,7 @@ body {
   </div>
 
 <script>
-function minutesUntil(month, day) {
+function timeUntil(month, day) {
   const now = new Date();
   let year = now.getFullYear();
 
@@ -44,35 +44,51 @@ function minutesUntil(month, day) {
     target = Date.UTC(year + 1, month, day);
   }
 
-  const diffMs = target - now.getTime();
-  return Math.max(0, Math.floor(diffMs / 60000));
+  let diff = target - now.getTime();
+  diff = Math.max(0, diff);
+
+  const totalSeconds = Math.floor(diff / 1000);
+
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+
+  return { days, hours, minutes };
 }
 
 function update() {
 
-  // Courtney — June 1 (5)
-  const courtneyMinutes = minutesUntil(5, 1);
+  // Courtney — June 1
+  const courtney = timeUntil(5, 1);
 
-  // Drew — March 15 (2)
-  const drewMinutes = minutesUntil(2, 15);
+  // Drew — March 15
+  const drew = timeUntil(2, 15);
 
-  // Michelle — March 1 (2)
-  const michelleMinutes = minutesUntil(2, 1);
+  // Michelle — March 1
+  const michelle = timeUntil(2, 1);
 
-  // Nick — February 28 (1)
-  const nickMinutes = minutesUntil(1, 28);
+  // Nick — February 28
+  const nick = timeUntil(1, 28);
 
   document.getElementById("courtney").innerHTML =
-    `<span class="count-num">${courtneyMinutes}</span> minutes until Courtney completes her next complete draft of Bad Energy.`;
+    `<span class="count-num">${courtney.days}</span> days ` +
+    `<span class="count-num">${courtney.hours}</span> hours ` +
+    `<span class="count-num">${courtney.minutes}</span> minutes until Courtney completes her next complete draft of Bad Energy.`;
 
   document.getElementById("drew").innerHTML =
-    `<span class="count-num">${drewMinutes}</span> minutes until Drew shares 50,000 words of his novel-in-progress.`;
+    `<span class="count-num">${drew.days}</span> days ` +
+    `<span class="count-num">${drew.hours}</span> hours ` +
+    `<span class="count-num">${drew.minutes}</span> minutes until Drew shares 50,000 words of his novel-in-progress....`;
 
   document.getElementById("michelle").innerHTML =
-    `<span class="count-num">${michelleMinutes}</span> minutes until Michelle completes her first draft of Merel's story.`;
+    `<span class="count-num">${michelle.days}</span> days ` +
+    `<span class="count-num">${michelle.hours}</span> hours ` +
+    `<span class="count-num">${michelle.minutes}</span> minutes until Michelle completes her first draft of Merel's story.`;
 
   document.getElementById("nick").innerHTML =
-    `<span class="count-num">${nickMinutes}</span> minutes until Nick sends everyone his final version of The Complex.`;
+    `<span class="count-num">${nick.days}</span> days ` +
+    `<span class="count-num">${nick.hours}</span> hours ` +
+    `<span class="count-num">${nick.minutes}</span> minutes until Nick sends everyone his final version of The Complex.`;
 }
 
 update();
