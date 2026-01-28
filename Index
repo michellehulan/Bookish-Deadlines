@@ -1,0 +1,56 @@
+<style>
+body {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  color: #003c69;
+
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  height: 100vh;
+  margin: 0;
+  padding-left: 10px;
+  text-align: left;
+}
+
+#countdown {
+  white-space: normal;
+}
+</style>
+
+<body>
+  <div id="days"></div>
+  <div id="countdown"></div>
+
+<script>
+function update() {
+  const now = new Date();
+  const year = now.getFullYear();
+
+  // Today at UTC midnight
+  const todayUTC = Date.UTC(year, now.getMonth(), now.getDate());
+
+  // March 15 this year at UTC midnight (March = 2)
+  let targetYear = year;
+  let targetUTC = Date.UTC(targetYear, 2, 15);
+
+  // If already passed, use next year
+  if (todayUTC > targetUTC) {
+    targetYear = year + 1;
+    targetUTC = Date.UTC(targetYear, 2, 15);
+  }
+
+  const msPerDay = 86400000;
+  const days = Math.ceil((targetUTC - todayUTC) / msPerDay);
+
+  document.getElementById("days").textContent =
+    days + " days";
+
+  document.getElementById("countdown").textContent =
+    days + " more days until Drew shares 50,000 words of his novel-in-progress....";
+}
+
+update();
+</script>
+</body>
