@@ -1,21 +1,23 @@
 <style>
 body {
   font-family: Arial, sans-serif;
-  font-size: 14px;
+  font-size: 16px;
   color: #003c69;
 
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
 
   height: 100vh;
   margin: 0;
-  padding-left: 10px;
-  text-align: left;
+  text-align: center;
 }
 
-#countdown {
-  white-space: normal;
+/* wrapper for vertical spacing */
+#countdowns {
+  display: flex;
+  flex-direction: column;
+  gap: 18px; /* space between lines */
 }
 
 /* red + bold numbers */
@@ -26,38 +28,54 @@ body {
 </style>
 
 <body>
-  <div id="countdown"></div>
+  <div id="countdowns">
+    <div id="courtney"></div>
+    <div id="michelle"></div>
+    <div id="nick"></div>
+  </div>
 
 <script>
-function update() {
+function minutesUntil(month, day) {
   const now = new Date();
+  let year = now.getFullYear();
 
-  let targetYear = now.getFullYear();
+  // target at UTC midnight
+  let target = Date.UTC(year, month, day);
 
-  // March 15 at UTC midnight
-  let targetUTC = Date.UTC(targetYear, 2, 15);
-
-  // If already passed, use next year
-  if (now.getTime() > targetUTC) {
-    targetYear++;
-    targetUTC = Date.UTC(targetYear, 2, 15);
+  // if passed, move to next year
+  if (now.getTime() > target) {
+    target = Date.UTC(year + 1, month, day);
   }
 
-  const diff = targetUTC - now.getTime();
-
-  const totalSeconds = Math.max(0, Math.floor(diff / 1000));
-
-  const days = Math.floor(totalSeconds / 86400);
-  const hours = Math.floor((totalSeconds % 86400) / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-
-  document.getElementById("countdown").innerHTML =
-    `<span class="count-num">${days}</span> days ` +
-    `<span class="count-num">${hours}</span> hours ` +
-    `<span class="count-num">${minutes}</span> minutes until Drew shares 50,000 words of his novel-in-progress....`;
+  const diffMs = target - now.getTime();
+  return Math.max(0, Math.floor(diffMs / 60000)); // total minutes
 }
 
+function update() {
+
+  // Courtney — June 1 (month = 5)
+  const courtneyMinutes = minutesUntil(5, 1);
+
+  // Michelle — March 1 (month = 2)
+  const michelleMinutes = minutesUntil(2, 1);
+
+  // Nick — February 28 (month = 1)
+  const nickMinutes = minutesUntil(1, 28);
+
+  document.getElementById("courtney").innerHTML =
+    `<span class="count-num">${courtneyMinutes}</span> minutes until Courtney completes her next complete draft of Bad Energy.`;
+
+  document.getElementById("michelle").innerHTML =
+    `<span class="count-num">${michelleMinutes}</span> minutes until Michelle completes her first draft of Merel's story.`;
+
+  document.getElementById("nick").innerHTML =
+    `<span class="count-num">${nickMinutes}</span> minutes until Nick sends everyone his final version of The Complex.`;
+}
+
+// run immediately
 update();
+
+// update every second
 setInterval(update, 1000);
 </script>
 </body>
