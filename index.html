@@ -66,14 +66,6 @@ const writers = [
     month: 1,
     day: 28,
     text: "sends everyone his final version of The Complex."
-  },
-
-  /* FAKE TEST ENTRY */
-  {
-    name: "Test Writer",
-    month: 0,
-    day: 1,
-    text: "does absolutely nothing but trigger the Time’s Up state."
   }
 ];
 
@@ -113,7 +105,11 @@ function update() {
   });
 
   // expired / soonest first
-  rows.sort((a, b) => a.ms - b.ms);
+  rows.sort((a, b) => {
+    if (a.expired && !b.expired) return -1;
+    if (!a.expired && b.expired) return 1;
+    return a.ms - b.ms;
+  });
 
   container.innerHTML = "";
 
