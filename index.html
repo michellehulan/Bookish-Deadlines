@@ -12,8 +12,15 @@ body {
   margin: 0;
   text-align: center;
 
-  /* neon sparkle cursor */
+  /* hide system cursor so our wand is the cursor */
   cursor: none;
+}
+
+#panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
 }
 
 #countdowns {
@@ -40,18 +47,120 @@ body {
   100% { opacity: 1; }
 }
 
-/* neon green sparkle dots */
+/* ---------- Emergency Button ---------- */
+.emergency-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+
+  width: 260px;
+  height: 64px;
+
+  background: #c00000;
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border-radius: 999px;
+
+  box-shadow:
+    0 10px 0 #7a0000,
+    0 18px 30px rgba(0,0,0,0.25);
+
+  user-select: none;
+  transform: translateY(0);
+  transition: transform 120ms ease, box-shadow 120ms ease, filter 120ms ease;
+}
+
+/* "press" effect */
+.emergency-btn:active {
+  transform: translateY(8px);
+  box-shadow:
+    0 2px 0 #7a0000,
+    0 8px 18px rgba(0,0,0,0.20);
+  filter: brightness(0.95);
+}
+
+.emergency-subtext {
+  font-size: 12px;
+  opacity: 0.9;
+  margin-top: 6px;
+}
+
+/* ---------- Wand Cursor + Sparkles ---------- */
+
+/* the cursor container that follows the mouse */
+#wandCursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 24px;
+  height: 24px;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+}
+
+/* small wand tip (default state) */
+#wandCursor.wand::before {
+  content: "";
+  position: absolute;
+  left: 9px;
+  top: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #39ff14;
+  box-shadow: 0 0 10px #39ff14, 0 0 22px #39ff14;
+}
+
+/* tiny wand "handle" */
+#wandCursor.wand::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 13px;
+  width: 14px;
+  height: 3px;
+  background: rgba(0, 60, 105, 0.55);
+  border-radius: 999px;
+  transform: rotate(-35deg);
+}
+
+/* hand state when hovering button */
+#wandCursor.hand {
+  width: 28px;
+  height: 28px;
+}
+
+#wandCursor.hand::before {
+  content: "☞";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -55%);
+  font-size: 22px;
+  color: #003c69;
+  text-shadow: 0 0 10px rgba(57,255,20,0.45);
+}
+
+#wandCursor.hand::after {
+  content: "";
+}
+
+/* sparkle particles */
 .sparkle {
   position: fixed;
   width: 6px;
   height: 6px;
   border-radius: 50%;
   pointer-events: none;
-  background: #39ff14; /* neon green */
+  background: #39ff14;
   box-shadow: 0 0 10px #39ff14, 0 0 20px #39ff14;
   opacity: 1;
   transform: translate(-50%, -50%);
-  animation: fadeOut 0.6s forwards;
+  animation: fadeOut 0.7s forwards;
+  z-index: 9998;
 }
 
 @keyframes fadeOut {
@@ -63,7 +172,25 @@ body {
 </style>
 
 <body>
-  <div id="countdowns"></div>
+  <div id="panel">
+    <div>
+      <a
+        class="emergency-btn"
+        id="emergencyBtn"
+        href="https://www.youtube.com/watch?v=CMs6PELL5DU"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        EMERGENCY VIDEO
+      </a>
+      <div class="emergency-subtext">Need motivation? Smash the button.</div>
+    </div>
+
+    <div id="countdowns"></div>
+  </div>
+
+  <!-- wand cursor element -->
+  <div id="wandCursor" class="wand"></div>
 
 <script>
 const writers = [
@@ -128,7 +255,7 @@ function update() {
     return { ...w, ...t };
   });
 
-  // expired / soonest first
+  // expired first, then shortest remaining time first
   rows.sort((a, b) => {
     if (a.expired && !b.expired) return -1;
     if (!a.expired && b.expired) return 1;
@@ -156,14 +283,59 @@ function update() {
 update();
 setInterval(update, 1000);
 
-/* neon sparkle cursor trail */
+/* ---------- Wand cursor + sparkles ---------- */
+const wand = document.getElementById("wandCursor");
+const emergencyBtn = document.getElementById("emergencyBtn");
+
+let mouseX = window.innerWidth / 2;
+let mouseY = window.innerHeight / 2;
+let wandX = mouseX;
+let wandY = mouseY;
+
+// smooth follow animation
+function animateWand() {
+  wandX += (mouseX - wandX) * 0.25;
+  wandY += (mouseY - wandY) * 0.25;
+  wand.style.left = wandX + "px";
+  wand.style.top = wandY + "px";
+  requestAnimationFrame(animateWand);
+}
+animateWand();
+
+// more sparkles per move
 document.addEventListener("mousemove", (e) => {
-  const sparkle = document.createElement("div");
-  sparkle.className = "sparkle";
-  sparkle.style.left = e.clientX + "px";
-  sparkle.style.top = e.clientY + "px";
-  document.body.appendChild(sparkle);
-  setTimeout(() => sparkle.remove(), 600);
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+
+  // sprinkle multiple particles
+  for (let i = 0; i < 4; i++) {
+    const sparkle = document.createElement("div");
+    sparkle.className = "sparkle";
+
+    const offsetX = (Math.random() - 0.5) * 18;
+    const offsetY = (Math.random() - 0.5) * 18;
+
+    const size = 4 + Math.random() * 5; // 4–9px
+    sparkle.style.width = size + "px";
+    sparkle.style.height = size + "px";
+
+    sparkle.style.left = (e.clientX + offsetX) + "px";
+    sparkle.style.top = (e.clientY + offsetY) + "px";
+
+    document.body.appendChild(sparkle);
+    setTimeout(() => sparkle.remove(), 700);
+  }
+});
+
+// swap to hand when hovering the button
+emergencyBtn.addEventListener("mouseenter", () => {
+  wand.classList.remove("wand");
+  wand.classList.add("hand");
+});
+
+emergencyBtn.addEventListener("mouseleave", () => {
+  wand.classList.remove("hand");
+  wand.classList.add("wand");
 });
 </script>
 </body>
