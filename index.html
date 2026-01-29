@@ -12,10 +12,10 @@ body {
   margin: 0;
   text-align: center;
 
+  /* hide system cursor so pencil replaces it */
   cursor: none;
 }
 
-/* layout */
 #panel {
   display: flex;
   flex-direction: column;
@@ -46,19 +46,19 @@ body {
   100% { opacity: 1; }
 }
 
-/* ---------- Arcade-Style Black Button ---------- */
+/* ---------- Arcade-Style Black Button (50% smaller) ---------- */
 .emergency-btn {
-  width: 92px;
-  height: 92px;
+  width: 46px;   /* was ~92px */
+  height: 46px;  /* was ~92px */
   border-radius: 50%;
 
   background: radial-gradient(circle at 30% 30%, #444, #111);
 
   box-shadow:
-    inset 0 6px 10px rgba(255,255,255,0.15),
-    inset 0 -8px 14px rgba(0,0,0,0.8),
-    0 10px 0 #050505,
-    0 18px 28px rgba(0,0,0,0.6);
+    inset 0 3px 5px rgba(255,255,255,0.15),
+    inset 0 -4px 7px rgba(0,0,0,0.8),
+    0 5px 0 #050505,
+    0 9px 14px rgba(0,0,0,0.6);
 
   margin: 8px auto 18px;
   display: block;
@@ -69,85 +69,127 @@ body {
 }
 
 .emergency-btn:active {
-  transform: translateY(8px);
+  transform: translateY(4px);
 
   box-shadow:
-    inset 0 3px 6px rgba(255,255,255,0.12),
-    inset 0 -4px 10px rgba(0,0,0,0.9),
-    0 2px 0 #050505,
-    0 8px 18px rgba(0,0,0,0.6);
+    inset 0 2px 3px rgba(255,255,255,0.12),
+    inset 0 -2px 5px rgba(0,0,0,0.9),
+    0 1px 0 #050505,
+    0 4px 9px rgba(0,0,0,0.6);
 
   filter: brightness(0.95);
 }
 
-/* ---------- Wand Cursor ---------- */
+/* ---------- Pencil Cursor ---------- */
 #wandCursor {
   position: fixed;
-  width: 24px;
-  height: 24px;
+  width: 86px;
+  height: 22px;
   pointer-events: none;
   z-index: 9999;
+  transform: translate(-50%, -50%) rotate(-15deg);
+}
+
+/* pencil body */
+#wandCursor.pencil::before {
+  content: "";
+  position: absolute;
+  left: 10px;
+  top: 8px;
+  width: 58px;
+  height: 8px;
+  background: linear-gradient(to right, #ffe066, #f1c40f);
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(255, 224, 102, 0.35);
+}
+
+/* metal band */
+#wandCursor.pencil::after {
+  content: "";
+  position: absolute;
+  left: 68px;
+  top: 8px;
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(#cfcfcf, #7a7a7a);
+}
+
+/* eraser */
+#wandCursor .eraser {
+  position: absolute;
+  left: 76px;
+  top: 7px;
+  width: 12px;
+  height: 10px;
+  background: #ff8fb1;
+  border-radius: 3px;
+}
+
+/* wooden tip */
+#wandCursor .tip {
+  position: absolute;
+  left: 2px;
+  top: 8px;
+  width: 0;
+  height: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-right: 8px solid #d8b58a;
+}
+
+/* graphite lead */
+#wandCursor .lead {
+  position: absolute;
+  left: 0px;
+  top: 10px;
+  width: 0;
+  height: 0;
+  border-top: 2px solid transparent;
+  border-bottom: 2px solid transparent;
+  border-right: 4px solid #333;
+}
+
+/* hand state when hovering button */
+#wandCursor.hand {
+  width: 28px;
+  height: 28px;
   transform: translate(-50%, -50%);
 }
 
-/* wand state */
-#wandCursor.wand::before {
-  content: "";
-  position: absolute;
-  left: 9px;
-  top: 6px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #39ff14;
-  box-shadow: 0 0 10px #39ff14, 0 0 22px #39ff14;
-}
-
-#wandCursor.wand::after {
-  content: "";
-  position: absolute;
-  left: 6px;
-  top: 13px;
-  width: 14px;
-  height: 3px;
-  background: rgba(0,60,105,0.55);
-  border-radius: 999px;
-  transform: rotate(-35deg);
-}
-
-/* hand state */
 #wandCursor.hand::before {
   content: "☞";
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -55%);
-  font-size: 22px;
+  font-size: 26px;
   color: #003c69;
-  text-shadow: 0 0 10px rgba(57,255,20,0.4);
+  text-shadow: 0 0 10px rgba(255, 224, 102, 0.45);
 }
 
 #wandCursor.hand::after {
   content: "";
 }
 
-/* sparkle particles */
+/* ---------- Yellow Sparkle Particles ---------- */
 .sparkle {
   position: fixed;
   width: 6px;
   height: 6px;
   border-radius: 50%;
   pointer-events: none;
-  background: #39ff14;
-  box-shadow: 0 0 10px #39ff14, 0 0 20px #39ff14;
-  animation: fadeOut 0.7s forwards;
+  background: #ffe066;
+  box-shadow: 0 0 10px #ffe066, 0 0 18px rgba(255, 224, 102, 0.9);
+  opacity: 1;
+  transform: translate(-50%, -50%);
+  animation: fadeOut 0.75s forwards;
   z-index: 9998;
 }
 
 @keyframes fadeOut {
   to {
     opacity: 0;
-    transform: scale(0);
+    transform: translate(-50%, -50%) scale(0);
   }
 }
 </style>
@@ -157,8 +199,12 @@ body {
     <div id="countdowns"></div>
   </div>
 
-  <!-- wand cursor -->
-  <div id="wandCursor" class="wand"></div>
+  <!-- pencil cursor -->
+  <div id="wandCursor" class="pencil">
+    <div class="tip"></div>
+    <div class="lead"></div>
+    <div class="eraser"></div>
+  </div>
 
 <script>
 const writers = [
@@ -189,11 +235,11 @@ const writers = [
   }
 ];
 
-const YOUTUBE_LINK = "https://www.youtube.com/watch?v=CMs6PELL5DU";
+const YOUTUBE_LINK = "YOUR_YOUTUBE_LINK_HERE";
 
 function timeUntil(month, day) {
   const now = new Date();
-  let year = now.getFullYear();
+  const year = now.getFullYear();
 
   let target = Date.UTC(year, month, day);
 
@@ -226,6 +272,7 @@ function update() {
     return { ...w, ...t };
   });
 
+  // expired first, then shortest remaining time first
   rows.sort((a, b) => {
     if (a.expired && !b.expired) return -1;
     if (!a.expired && b.expired) return 1;
@@ -248,14 +295,15 @@ function update() {
 
     container.appendChild(div);
 
-    /* insert the mystery button after Courtney */
+    // insert the mystery arcade button after Courtney's line (wherever she sorts)
     if (w.hasButton) {
       const btn = document.createElement("a");
       btn.className = "emergency-btn";
       btn.href = YOUTUBE_LINK;
       btn.target = "_blank";
-      btn.id = "emergencyBtn";
-
+      btn.rel = "noopener noreferrer";
+      btn.setAttribute("aria-label", "Emergency Motivation Video");
+      btn.setAttribute("title", "Emergency Motivation Video");
       container.appendChild(btn);
     }
   });
@@ -264,35 +312,37 @@ function update() {
 update();
 setInterval(update, 1000);
 
-/* ---------- Wand + Sparkles ---------- */
-const wand = document.getElementById("wandCursor");
+/* ---------- Pencil cursor + yellow sparkles ---------- */
+const pencil = document.getElementById("wandCursor");
 
 let mouseX = window.innerWidth / 2;
 let mouseY = window.innerHeight / 2;
-let wandX = mouseX;
-let wandY = mouseY;
+let cursorX = mouseX;
+let cursorY = mouseY;
 
-function animateWand() {
-  wandX += (mouseX - wandX) * 0.25;
-  wandY += (mouseY - wandY) * 0.25;
-  wand.style.left = wandX + "px";
-  wand.style.top = wandY + "px";
-  requestAnimationFrame(animateWand);
+// smooth follow
+function animateCursor() {
+  cursorX += (mouseX - cursorX) * 0.25;
+  cursorY += (mouseY - cursorY) * 0.25;
+  pencil.style.left = cursorX + "px";
+  pencil.style.top = cursorY + "px";
+  requestAnimationFrame(animateCursor);
 }
-animateWand();
+animateCursor();
 
+// sparkle trail (heavier)
 document.addEventListener("mousemove", (e) => {
   mouseX = e.clientX;
   mouseY = e.clientY;
 
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 5; i++) {
     const sparkle = document.createElement("div");
     sparkle.className = "sparkle";
 
-    const offsetX = (Math.random() - 0.5) * 18;
-    const offsetY = (Math.random() - 0.5) * 18;
+    const offsetX = (Math.random() - 0.5) * 22;
+    const offsetY = (Math.random() - 0.5) * 22;
 
-    const size = 4 + Math.random() * 5;
+    const size = 4 + Math.random() * 6; // 4–10px
     sparkle.style.width = size + "px";
     sparkle.style.height = size + "px";
 
@@ -300,22 +350,22 @@ document.addEventListener("mousemove", (e) => {
     sparkle.style.top = (e.clientY + offsetY) + "px";
 
     document.body.appendChild(sparkle);
-    setTimeout(() => sparkle.remove(), 700);
+    setTimeout(() => sparkle.remove(), 750);
   }
 });
 
-/* hover hand when over button */
+// swap to hand when hovering over the button
 document.addEventListener("mouseover", (e) => {
   if (e.target.classList.contains("emergency-btn")) {
-    wand.classList.remove("wand");
-    wand.classList.add("hand");
+    pencil.classList.remove("pencil");
+    pencil.classList.add("hand");
   }
 });
 
 document.addEventListener("mouseout", (e) => {
   if (e.target.classList.contains("emergency-btn")) {
-    wand.classList.remove("hand");
-    wand.classList.add("wand");
+    pencil.classList.remove("hand");
+    pencil.classList.add("pencil");
   }
 });
 </script>
