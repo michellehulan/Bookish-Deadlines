@@ -11,6 +11,9 @@ body {
   height: 100vh;
   margin: 0;
   text-align: center;
+
+  /* neon sparkle cursor */
+  cursor: none;
 }
 
 #countdowns {
@@ -35,6 +38,27 @@ body {
   0% { opacity: 1; }
   50% { opacity: 0.4; }
   100% { opacity: 1; }
+}
+
+/* neon green sparkle dots */
+.sparkle {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: #39ff14; /* neon green */
+  box-shadow: 0 0 10px #39ff14, 0 0 20px #39ff14;
+  opacity: 1;
+  transform: translate(-50%, -50%);
+  animation: fadeOut 0.6s forwards;
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0);
+  }
 }
 </style>
 
@@ -131,5 +155,15 @@ function update() {
 
 update();
 setInterval(update, 1000);
+
+/* neon sparkle cursor trail */
+document.addEventListener("mousemove", (e) => {
+  const sparkle = document.createElement("div");
+  sparkle.className = "sparkle";
+  sparkle.style.left = e.clientX + "px";
+  sparkle.style.top = e.clientY + "px";
+  document.body.appendChild(sparkle);
+  setTimeout(() => sparkle.remove(), 600);
+});
 </script>
 </body>
