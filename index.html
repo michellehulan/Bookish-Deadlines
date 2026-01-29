@@ -15,15 +15,11 @@ body {
   cursor: none;
 }
 
-/* main vertical layout */
+/* layout */
 #panel {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  height: 100vh;
-  width: 100%;
   align-items: center;
-  padding: 30px 0;
 }
 
 #countdowns {
@@ -50,17 +46,21 @@ body {
   100% { opacity: 1; }
 }
 
-/* ---------- Emergency Button ---------- */
+/* ---------- Emergency Button (Round) ---------- */
 .emergency-btn {
-  display: inline-block;
-  width: 260px;
-  height: 64px;
-  border-radius: 999px;
-  background: #c00000;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #ff5a5a, #b40000);
 
   box-shadow:
-    0 10px 0 #7a0000,
-    0 18px 30px rgba(0,0,0,0.25);
+    inset 0 6px 12px rgba(255,255,255,0.25),
+    inset 0 -6px 12px rgba(0,0,0,0.25),
+    0 10px 0 #6f0000,
+    0 18px 30px rgba(0,0,0,0.3);
+
+  margin: 8px auto 18px;
+  display: block;
 
   transition: transform 120ms ease, box-shadow 120ms ease, filter 120ms ease;
 }
@@ -68,8 +68,10 @@ body {
 .emergency-btn:active {
   transform: translateY(8px);
   box-shadow:
-    0 2px 0 #7a0000,
-    0 8px 18px rgba(0,0,0,0.2);
+    inset 0 3px 6px rgba(255,255,255,0.2),
+    inset 0 -3px 6px rgba(0,0,0,0.3),
+    0 2px 0 #6f0000,
+    0 8px 18px rgba(0,0,0,0.25);
   filter: brightness(0.95);
 }
 
@@ -147,22 +149,10 @@ body {
 
 <body>
   <div id="panel">
-
     <div id="countdowns"></div>
-
-    <!-- mysterious red button at bottom -->
-    <a
-      class="emergency-btn"
-      id="emergencyBtn"
-      href="https://www.youtube.com/watch?v=CMs6PELL5DU"
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="Emergency Motivation Video"
-      title="Emergency Motivation Video"
-    ></a>
-
   </div>
 
+  <!-- wand cursor -->
   <div id="wandCursor" class="wand"></div>
 
 <script>
@@ -171,7 +161,8 @@ const writers = [
     name: "Courtney",
     month: 5,
     day: 1,
-    text: "completes her next complete draft of Bad Energy."
+    text: "completes her next complete draft of Bad Energy.",
+    hasButton: true
   },
   {
     name: "Drew",
@@ -192,6 +183,8 @@ const writers = [
     text: "sends everyone his final version of The Complex."
   }
 ];
+
+const YOUTUBE_LINK = "https://www.youtube.com/watch?v=CMs6PELL5DU";
 
 function timeUntil(month, day) {
   const now = new Date();
@@ -249,6 +242,17 @@ function update() {
     }
 
     container.appendChild(div);
+
+    /* insert the mystery button after Courtney */
+    if (w.hasButton) {
+      const btn = document.createElement("a");
+      btn.className = "emergency-btn";
+      btn.href = YOUTUBE_LINK;
+      btn.target = "_blank";
+      btn.id = "emergencyBtn";
+
+      container.appendChild(btn);
+    }
   });
 }
 
@@ -257,7 +261,6 @@ setInterval(update, 1000);
 
 /* ---------- Wand + Sparkles ---------- */
 const wand = document.getElementById("wandCursor");
-const emergencyBtn = document.getElementById("emergencyBtn");
 
 let mouseX = window.innerWidth / 2;
 let mouseY = window.innerHeight / 2;
@@ -296,14 +299,19 @@ document.addEventListener("mousemove", (e) => {
   }
 });
 
-emergencyBtn.addEventListener("mouseenter", () => {
-  wand.classList.remove("wand");
-  wand.classList.add("hand");
+/* hover hand when over button */
+document.addEventListener("mouseover", (e) => {
+  if (e.target.classList.contains("emergency-btn")) {
+    wand.classList.remove("wand");
+    wand.classList.add("hand");
+  }
 });
 
-emergencyBtn.addEventListener("mouseleave", () => {
-  wand.classList.remove("hand");
-  wand.classList.add("wand");
+document.addEventListener("mouseout", (e) => {
+  if (e.target.classList.contains("emergency-btn")) {
+    wand.classList.remove("hand");
+    wand.classList.add("wand");
+  }
 });
 </script>
 </body>
