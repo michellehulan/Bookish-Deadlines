@@ -1,219 +1,249 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body {
-  font-family: Arial, sans-serif;
-  font-size: 16px;
-  color: #003c69;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", sans-serif;
+  font-size: 16px;
+  color: #5f6368;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  
   display: flex;
   justify-content: center;
   align-items: center;
-
-  height: 100vh;
-  margin: 0;
-  text-align: center;
-
-  cursor: none;
+  min-height: 100vh;
+  padding: 20px;
+  overflow: hidden;
 }
 
-/* layout */
+/* Main container */
 #panel {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 40px;
+  max-width: 600px;
+  width: 100%;
+  position: relative;
+  z-index: 10;
 }
 
+/* Header */
+#header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-size: 32px;
+  font-weight: 300;
+  color: #202124;
+  margin-bottom: 0;
+  letter-spacing: -0.5px;
+}
+
+/* Countdown items */
 #countdowns {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 24px;
+  width: 100%;
+}
+
+.countdown-item {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-left: 4px solid #81c995;
+}
+
+.countdown-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.countdown-item.expired {
+  border-left-color: #f8b4b4;
+  background: #fef7f6;
+}
+
+.writer-name {
+  font-size: 18px;
+  font-weight: 500;
+  color: #202124;
+  margin-bottom: 8px;
+}
+
+.countdown-text {
+  font-size: 14px;
+  color: #5f6368;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.countdown-numbers {
+  display: flex;
+  gap: 32px;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.number-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .count-num {
-  color: #c00000;
-  font-weight: bold;
+  font-size: 28px;
+  font-weight: 300;
+  color: #81c995;
+  line-height: 1;
+  margin-bottom: 4px;
 }
 
-/* flashing Times Up */
+.countdown-item.expired .count-num,
 .times-up {
-  color: #8b0000;
-  font-weight: bold;
-  animation: pulse 1s infinite;
+  color: #d33b27;
+  font-weight: 500;
+  animation: subtle-pulse 2s ease-in-out infinite;
 }
 
-@keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.4; }
-  100% { opacity: 1; }
+@keyframes subtle-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
 }
 
-/* ---------- Arcade Button (50% smaller) ---------- */
-.emergency-btn {
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #444, #111);
-
-  box-shadow:
-    inset 0 3px 5px rgba(255,255,255,0.15),
-    inset 0 -4px 7px rgba(0,0,0,0.8),
-    0 5px 0 #050505,
-    0 9px 14px rgba(0,0,0,0.6);
-
-  margin: 6px auto 16px;
-  display: block;
-
-  transition: transform 120ms ease,
-              box-shadow 120ms ease,
-              filter 120ms ease;
+.unit-label {
+  font-size: 12px;
+  color: #9aa0a6;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
 }
 
-.emergency-btn:active {
-  transform: translateY(4px);
-  box-shadow:
-    inset 0 2px 3px rgba(255,255,255,0.12),
-    inset 0 -2px 5px rgba(0,0,0,0.9),
-    0 1px 0 #050505,
-    0 4px 9px rgba(0,0,0,0.6);
-
-  filter: brightness(0.95);
+.times-up {
+  font-size: 16px;
+  text-align: center;
+  width: 100%;
 }
 
-/* ---------- Pencil Cursor ---------- */
-#wandCursor {
+/* Clown face */
+.clown-face {
   position: fixed;
-  width: 86px;
-  height: 22px;
+  font-size: 80px;
+  z-index: 5;
   pointer-events: none;
-  z-index: 9999;
-  transform: translate(-50%, -50%) rotate(-15deg);
+  animation: slideIn 10s ease-in-out forwards;
 }
 
-#wandCursor.pencil::before {
-  content: "";
-  position: absolute;
-  left: 10px;
-  top: 8px;
-  width: 58px;
-  height: 8px;
-  background: linear-gradient(to right, #ffe066, #f1c40f);
-  border-radius: 5px;
+@keyframes slideIn {
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
-#wandCursor.pencil::after {
-  content: "";
-  position: absolute;
-  left: 68px;
-  top: 8px;
-  width: 8px;
-  height: 8px;
-  background: linear-gradient(#cfcfcf, #7a7a7a);
+/* Responsive */
+@media (max-width: 600px) {
+  h1 {
+    font-size: 24px;
+  }
+  
+  .countdown-numbers {
+    gap: 20px;
+  }
+  
+  .count-num {
+    font-size: 24px;
+  }
+  
+  .countdown-item {
+    padding: 18px;
+  }
+
+  .clown-face {
+    font-size: 60px;
+  }
 }
-
-#wandCursor .eraser {
-  position: absolute;
-  left: 76px;
-  top: 7px;
-  width: 12px;
-  height: 10px;
-  background: #ff8fb1;
-  border-radius: 3px;
-}
-
-#wandCursor .tip {
-  position: absolute;
-  left: 2px;
-  top: 8px;
-  width: 0;
-  height: 0;
-  border-top: 4px solid transparent;
-  border-bottom: 4px solid transparent;
-  border-right: 8px solid #d8b58a;
-}
-
-#wandCursor .lead {
-  position: absolute;
-  left: 0px;
-  top: 10px;
-  width: 0;
-  height: 0;
-  border-top: 2px solid transparent;
-  border-bottom: 2px solid transparent;
-  border-right: 4px solid #333;
-}
-
-#wandCursor.hand {
-  width: 28px;
-  height: 28px;
-  transform: translate(-50%, -50%);
-}
-
-#wandCursor.hand::before {
-  content: "☞";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -55%);
-  font-size: 26px;
-  color: #003c69;
-}
-
-#wandCursor.hand::after { content: ""; }
-
-/* ---------- Sparkles ---------- */
-.sparkle {
-  position: fixed;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  pointer-events: none;
-  background: #ffe066;
-  box-shadow: 0 0 10px #ffe066;
-  animation: fadeOut 0.75s forwards;
-  z-index: 9998;
-}
-
-@keyframes fadeOut {
-  to { opacity: 0; transform: scale(0); }
-}
-
-/* ---------- Drawing Canvas ---------- */
-#drawLayer {
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-}
-
-#panel { position: relative; z-index: 2; }
 </style>
 </head>
 
 <body>
 
-<canvas id="drawLayer"></canvas>
-
 <div id="panel">
+  <div id="header">
+    <h1>Bookish Deadlines</h1>
+  </div>
+  
   <div id="countdowns"></div>
 </div>
 
-<div id="wandCursor" class="pencil">
-  <div class="tip"></div>
-  <div class="lead"></div>
-  <div class="eraser"></div>
-</div>
-
 <script>
+/* ---------- Creepy Clown Face ---------- */
+function spawnClownFace() {
+  const clown = document.createElement("div");
+  clown.className = "clown-face";
+  clown.textContent = "🤡";
+  
+  // Random starting position (off-screen edges)
+  const edges = [
+    { x: Math.random() * window.innerWidth, y: -100 }, // top
+    { x: Math.random() * window.innerWidth, y: window.innerHeight + 100 }, // bottom
+    { x: -100, y: Math.random() * window.innerHeight }, // left
+    { x: window.innerWidth + 100, y: Math.random() * window.innerHeight } // right
+  ];
+  
+  const startPos = edges[Math.floor(Math.random() * edges.length)];
+  const endX = Math.random() * window.innerWidth;
+  const endY = Math.random() * window.innerHeight;
+  
+  clown.style.left = startPos.x + "px";
+  clown.style.top = startPos.y + "px";
+  
+  document.body.appendChild(clown);
+  
+  // Animate sliding
+  setTimeout(() => {
+    clown.style.transition = "all 10s ease-in-out";
+    clown.style.left = endX + "px";
+    clown.style.top = endY + "px";
+  }, 10);
+  
+  // Remove after animation
+  setTimeout(() => {
+    clown.remove();
+  }, 10100);
+}
+
+// Spawn clown every 10 seconds
+setInterval(spawnClownFace, 10000);
+
 /* ---------- Countdown Data ---------- */
 const writers = [
   {
     name: "Courtney",
     month: 5,
     day: 1,
-    text: "completes her next complete draft of Bad Energy.",
-    hasButton: true
+    text: "completes her next complete draft of Bad Energy."
   },
   {
     name: "Drew",
@@ -234,8 +264,6 @@ const writers = [
     text: "sends everyone his final version of The Complex."
   }
 ];
-
-const YOUTUBE_LINK = "https://www.youtube.com/watch?v=CMs6PELL5DU";
 
 /* ---------- Countdown Logic ---------- */
 function timeUntil(month, day) {
@@ -265,7 +293,7 @@ function update() {
 
   const rows = writers.map(w => ({ ...w, ...timeUntil(w.month, w.day) }));
 
-  rows.sort((a,b)=>{
+  rows.sort((a,b) => {
     if (a.expired && !b.expired) return -1;
     if (!a.expired && b.expired) return 1;
     return a.ms - b.ms;
@@ -275,138 +303,37 @@ function update() {
 
   rows.forEach(w => {
     const div = document.createElement("div");
+    div.className = "countdown-item" + (w.expired ? " expired" : "");
 
     if (w.expired) {
-      div.innerHTML = `<span class="times-up">Time’s up for ${w.name}…</span>`;
+      div.innerHTML = `<div class="times-up">Time's up for ${w.name}</div>`;
     } else {
-      div.innerHTML =
-        `<span class="count-num">${w.days}</span> days ` +
-        `<span class="count-num">${w.hours}</span> hours ` +
-        `<span class="count-num">${w.minutes}</span> minutes until ${w.name} ${w.text}`;
+      div.innerHTML = `
+        <div class="writer-name">${w.name}</div>
+        <div class="countdown-text">${w.text}</div>
+        <div class="countdown-numbers">
+          <div class="number-block">
+            <div class="count-num">${w.days}</div>
+            <div class="unit-label">Days</div>
+          </div>
+          <div class="number-block">
+            <div class="count-num">${w.hours}</div>
+            <div class="unit-label">Hours</div>
+          </div>
+          <div class="number-block">
+            <div class="count-num">${w.minutes}</div>
+            <div class="unit-label">Minutes</div>
+          </div>
+        </div>
+      `;
     }
 
     container.appendChild(div);
-
-    if (w.hasButton) {
-      const btn = document.createElement("a");
-      btn.className = "emergency-btn";
-      btn.href = YOUTUBE_LINK;
-      btn.target = "_blank";
-      container.appendChild(btn);
-    }
   });
 }
 
 update();
 setInterval(update, 1000);
-
-/* ---------- Pencil Cursor + Sparkles ---------- */
-const pencil = document.getElementById("wandCursor");
-
-let mouseX = innerWidth/2, mouseY = innerHeight/2;
-let cx = mouseX, cy = mouseY;
-
-function animateCursor(){
-  cx += (mouseX - cx)*0.25;
-  cy += (mouseY - cy)*0.25;
-  pencil.style.left = cx+"px";
-  pencil.style.top = cy+"px";
-  requestAnimationFrame(animateCursor);
-}
-animateCursor();
-
-document.addEventListener("mousemove", e=>{
-  mouseX=e.clientX; mouseY=e.clientY;
-
-  for(let i=0;i<4;i++){
-    const s=document.createElement("div");
-    s.className="sparkle";
-    s.style.left=(e.clientX+(Math.random()-.5)*20)+"px";
-    s.style.top=(e.clientY+(Math.random()-.5)*20)+"px";
-    document.body.appendChild(s);
-    setTimeout(()=>s.remove(),700);
-  }
-});
-
-/* ---------- Button Hover Cursor ---------- */
-document.addEventListener("mouseover", e=>{
-  if(e.target.classList.contains("emergency-btn")){
-    pencil.classList.remove("pencil");
-    pencil.classList.add("hand");
-  }
-});
-document.addEventListener("mouseout", e=>{
-  if(e.target.classList.contains("emergency-btn")){
-    pencil.classList.remove("hand");
-    pencil.classList.add("pencil");
-  }
-});
-
-/* ---------- Writing Canvas ---------- */
-const phrase = "all work no play makes jack a dull boy ";
-const canvas=document.getElementById("drawLayer");
-const ctx=canvas.getContext("2d");
-
-function resizeCanvas(){
-  const dpr=devicePixelRatio||1;
-  canvas.width=innerWidth*dpr;
-  canvas.height=innerHeight*dpr;
-  canvas.style.width=innerWidth+"px";
-  canvas.style.height=innerHeight+"px";
-  ctx.setTransform(dpr,0,0,dpr,0,0);
-  ctx.font="16px Arial";
-  ctx.fillStyle="rgba(30,30,30,.55)";
-}
-resizeCanvas();
-addEventListener("resize",resizeCanvas);
-
-let writing=false,lastX=0,lastY=0,charIndex=0,distAcc=0;
-const stepPx=8;
-
-addEventListener("mousedown",e=>{
-  writing=true;
-  lastX=e.clientX;
-  lastY=e.clientY;
-  distAcc=0;
-});
-
-addEventListener("mouseup",()=>writing=false);
-addEventListener("mouseleave",()=>writing=false);
-
-addEventListener("mousemove",e=>{
-  if(!writing) return;
-
-  const dx=e.clientX-lastX;
-  const dy=e.clientY-lastY;
-  const len=Math.hypot(dx,dy);
-  const angle=Math.atan2(dy,dx);
-
-  let traveled=0;
-  while(distAcc+(len-traveled)>=stepPx){
-    const step=stepPx-distAcc;
-    traveled+=step;
-    const t=traveled/len;
-
-    ctx.save();
-    ctx.translate(lastX+dx*t,lastY+dy*t);
-    ctx.rotate(angle);
-    ctx.fillText(phrase[charIndex++%phrase.length],0,0);
-    ctx.restore();
-
-    distAcc=0;
-  }
-
-  distAcc+=len-traveled;
-  lastX=e.clientX;
-  lastY=e.clientY;
-});
-
-// press C to clear
-addEventListener("keydown",e=>{
-  if(e.key.toLowerCase()==="c"){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-  }
-});
 </script>
 
 </body>
